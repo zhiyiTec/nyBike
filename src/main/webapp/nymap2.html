@@ -37,6 +37,8 @@
     <script type="text/javascript" src="js/ajax.js"></script>
 
     <script type="text/javascript">
+        var levelMap = new Map(); //此处用于存放自行车数量等级
+        var detailMap = new Map(); //此处用于存放站点的详情（id->sDetail(对象)）
         var map = new BMap.Map("container");
         // 创建地图实例  
         var point = new BMap.Point(-73.985690, 40.748449);
@@ -55,11 +57,11 @@
 
         var isBigIcon = true;
         var marks = new Array(); //用于存放所有生成的marker
-        addMarker(point, "img/si_0.png", iconsmallSize);
+        // addMarker(point, "img/si_0.png", iconsmallSize);
 
 
         var stationSatus = ajax("get", "https://gbfs.citibikenyc.com/gbfs/en/station_status.json", );
-        var levelMap = new Map(); //此处用于存放自行车数量等级
+
         var stationInfo = ajax("get", "https://gbfs.citibikenyc.com/gbfs/en/station_information.json", );
         getBikeLevel(stationSatus.data.stations); //此处将level等级存入levelMap中
         setBileLevel(stationInfo.data.stations); //此处通过不同等级设置不同的标准
