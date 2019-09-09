@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>NewYork</title>
+    <link rel="stylesheet" href="css/page.css">
+    <style type="text/css">
+        html {
+            height: 100%
+        }
+        
+        body {
+            height: 100%;
+            margin: 0px;
+            padding: 0px
+        }
+        
+        #container {
+            height: 100%
+        }
+    </style>
+    <link rel="stylesheet" href="css/page.css">
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=Mgl9LGuQ6QHPvEM6EkgXjCbBKP1A3GuN">
+        //v3.0版本的引用方式：src="http://api.map.baidu.com/api?v=3.0&ak=您的密钥"
+    </script>
+</head>
+
+<body>
+    <div id="container"></div>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="js/cotent.js"></script>
+    <script type="text/javascript" src="js/config.js"></script>
+    <script type="text/javascript" src="js/nymap.js"></script>
+    <script type="text/javascript" src="js/bmap.js"></script>
+    <script type="text/javascript" src="js/ajax.js"></script>
+
+    <script type="text/javascript">
+        var map = new BMap.Map("container");
+        // 创建地图实例  
+        var point = new BMap.Point(-73.985690, 40.748449);
+        // 创建点坐标  
+        map.centerAndZoom(point, 14);
+        map.enableScrollWheelZoom(true);
+        // 初始化地图，设置中心点坐标和地图级别  
+        //JSON格式
+        var opts = {
+            anchor: BMAP_ANCHOR_BOTTOM_RIGHT,
+            offset: new BMap.Size(20, 20)
+        }
+        map.addControl(new BMap.NavigationControl(opts));
+
+        //setBMapStyle("30c0f2fa9df706417c306c5815879da8");//此处用于设置地图样式
+
+        var isBigIcon = true;
+        var marks = new Array(); //用于存放所有生成的marker
+        addMarker(point, "img/si_0.png", iconsmallSize);
+
+
+        var stationSatus = ajax("get", "https://gbfs.citibikenyc.com/gbfs/en/station_status.json", );
+        var levelMap = new Map(); //此处用于存放自行车数量等级
+        var stationInfo = ajax("get", "https://gbfs.citibikenyc.com/gbfs/en/station_information.json", );
+        getBikeLevel(stationSatus.data.stations); //此处将level等级存入levelMap中
+        setBileLevel(stationInfo.data.stations); //此处通过不同等级设置不同的标准
+
+        setListenByZoom(point, 11);
+    </script>
+</body>
+
+</html>
