@@ -32,7 +32,6 @@
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="js/cotent.js"></script>
     <script type="text/javascript" src="js/config.js"></script>
-    <script type="text/javascript" src="js/nymap.js"></script>
     <script type="text/javascript" src="js/bmap.js"></script>
     <script type="text/javascript" src="js/ajax.js"></script>
 
@@ -53,16 +52,18 @@
         }
         map.addControl(new BMap.NavigationControl(opts));
 
-        //setBMapStyle("30c0f2fa9df706417c306c5815879da8");//此处用于设置地图样式
+
 
         var isBigIcon = true;
         var marks = new Array(); //用于存放所有生成的marker
-        // addMarker(point, "img/si_0.png", iconsmallSize);
 
 
-        var stationSatus = ajax("get", "https://gbfs.citibikenyc.com/gbfs/en/station_status.json", );
 
-        var stationInfo = ajax("get", "https://gbfs.citibikenyc.com/gbfs/en/station_information.json", );
+        var stationSatus = ajax("get", URL.station_status_back, );
+
+
+        var stationInfo = ajax("get", URL.station_Info_back, );
+        console.log(stationInfo)
         getBikeLevel(stationSatus.data.stations); //此处将level等级存入levelMap中
         setBileLevel(stationInfo.data.stations); //此处通过不同等级设置不同的标准
 

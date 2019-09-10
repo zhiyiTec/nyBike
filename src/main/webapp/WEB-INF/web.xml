@@ -3,10 +3,31 @@
   <display-name>nybike</display-name>
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
-    <welcome-file>index.htm</welcome-file>
+
     <welcome-file>index.jsp</welcome-file>
     <welcome-file>default.html</welcome-file>
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
+  <listener>
+  	<listener-class>cn.tedu.nybike.listener.SCListener</listener-class>
+  </listener>
+    <servlet>
+  <servlet-name>StationStatusServlet</servlet-name>
+  <servlet-class>cn.tedu.nybike.web.StationStatusServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  <servlet-name>StationStatusServlet</servlet-name>
+  <url-pattern>/StationStatusServlet</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>StationInfoServlet</servlet-name>
+    <servlet-class>cn.tedu.nybike.web.StationInfoServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>StationInfoServlet</servlet-name>
+    <url-pattern>/StationInfoServlet</url-pattern>
+  </servlet-mapping>
 </web-app>
