@@ -100,7 +100,7 @@ function setListenByZoom() {
 //设置缩放之后的图标变化
 function switchIcon(zoomSize, iconType) {
     $(marks).each(function(index, data) {
-        iconColor = data.getIcon().imageUrl.substring(data.getIcon().imageUrl.length - 5, data.getIcon().imageUrl.length);
+        var iconColor = data.getIcon().imageUrl.substring(data.getIcon().imageUrl.length - 5, data.getIcon().imageUrl.length);
 
         if (iconType == false) {
 
