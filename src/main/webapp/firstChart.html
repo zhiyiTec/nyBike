@@ -14,6 +14,34 @@
 <body>
     <div id="div1"></div>
     <script type="text/javascript">
+        var myChart = echarts.init(
+            document.getElementById('div1'));
+
+        // ajax请求服务器获取数据，给xdata和ydata赋值
+        var xData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        var yData1 = [820, 932, 901, 934, 1290, 1330, 1320];
+        var yData2 = [720, 832, 801, 834, 990, 1130, 1220];
+
+
+        option = {
+            xAxis: {
+                type: 'category',
+                data: xData
+            },
+            yAxis: {
+                type: 'value',
+            },
+            series: [{
+                data: yData1,
+                type: 'line'
+            }, {
+                data: yData2,
+                type: 'line'
+            }]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
     </script>
 </body>
 

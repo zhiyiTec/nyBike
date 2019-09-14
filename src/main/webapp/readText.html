@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>NewYork</title>
+    <link rel="stylesheet" href="css/echart.css">
+    <script src="js/echarts.min.js"></script>
+
+
+</head>
+
+<body>
+
+    <div id="div1"></div>
+    <div>
+        <input type='file' onchange='openFile(event)'><br>
+        <div id="output">
+            <h3>读取到的内容为：<span style="color: red" id="alert">未选择任何文档</span></h3>
+            <p id="cotent"></p>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript">
+        var myChart = echarts.init(
+            document.getElementById('div1'), 'dark');
+
+        // ajax请求服务器获取数据，给xdata和ydata赋值
+        var xData = productWord();
+        var yData1 = [];
+        var maxdate;
+        var mindate = 0;
+        option = {
+            title: {
+                text: '字母统计'
+            },
+            xAxis: {
+                type: 'category',
+                data: xData
+            },
+            yAxis: {
+                type: 'value',
+                min: mindate,
+                max: maxdate,
+                splitArea: {
+                    show: true
+                }
+            },
+            series: [{
+                data: yData1,
+                type: 'line'
+            }]
+        };
+
+
+
+
+
+        var re;
+        var reeadCotent;
+        var openFile = function(event) {
+
+            var input = event.target;
+            var reader = new FileReader();
+            reader.onload = function() {
+                if (reader.result) {
+                    //显示文件内容
+
+
+                    re = reader.result;
+
+                    for (var i in xData) {
+
+                        yData1.push(count(re, xData[i]));
+                        reeadCotent += xData[i] + ":" + yData1[i] + "<br />";
+                    }
+                    if (reeadCotent.indexOf("undefined") != -1) {
+                        reeadCotent = reeadCotent.replace("undefined", "")
+                    }
+                    maxdate = Math.max.apply(null, yData1); //此处用于获取数组中的最大值
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                    $("#alert").text(re);
+                    $("#cotent").html(reeadCotent);
+
+                }
+            };
+            reader.readAsText(input.files[0]);
+        };
+
+        function count(scrstr, armstr) {
+            var count = 0;
+            while (scrstr.indexOf(armstr) != -1) {
+                scrstr = scrstr.replace(armstr, "")
+                count++;
+            }
+            return count;
+        }
+
+        function productWord() {
+            var re = [];
+            for (var i = 0; i < 26; i++) {
+                re.push(String.fromCharCode((65 + i)).toLowerCase());
+            }
+            return re;
+        }
+    </script>
+</body>
+
+</html>
