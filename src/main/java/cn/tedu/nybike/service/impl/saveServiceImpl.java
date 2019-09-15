@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class saveServiceImpl implements SaveService {
+public class SaveServiceImpl implements SaveService {
     @Autowired
     private SaveMapper saveMapper;
     public void saveStatus(String statusInfo) {

@@ -11,10 +11,12 @@ import javax.servlet.ServletContextListener;
 import cn.tedu.nybike.service.SaveService;
 import cn.tedu.nybike.util.HttpUtil;
 import cn.tedu.nybike.util.SpringContextUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class SCListener implements  ServletContextListener{
-
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private SaveService saveService=null;
 	private final String SSURL="https://gbfs.citibikenyc.com/gbfs/en/station_status.json";//stationSatus
@@ -32,7 +34,7 @@ public class SCListener implements  ServletContextListener{
 	public void contextInitialized(ServletContextEvent sce) {
 		// TODO Auto-generated method stub
 		System.out.println("监听到sc被创建");
-		//saveService = (SaveService) SpringContextUtil.getBean("saveService");    //获取bean
+
 		//此处通过事件对象
 		final ServletContext sc=sce.getServletContext();
 		
@@ -51,9 +53,11 @@ public class SCListener implements  ServletContextListener{
 						sc.setAttribute("info", info);
 
 						if(sc.getAttribute("status")!=null&&sc.getAttribute("info")!=null){
-							System.out.println("sc在"+df.format(new Date())+"请求到info数据，请求到的数据正常");
+							logger.info("sc在"+df.format(new Date())+"请求到info数据，请求到的数据正常");
+							//System.out.println("sc在"+df.format(new Date())+"请求到info数据，请求到的数据正常");
 						}else{
-							System.out.println("sc在"+df.format(new Date())+"请求到info数据，请求到异常数据");
+							logger.error("sc在"+df.format(new Date())+"!!!请求到info数据，请求到的异常数据!!!");
+							//System.out.println("sc在"+df.format(new Date())+"!!!请求到info数据，请求到的异常数据!!!");
 						}
 
 					}catch (Exception e) {

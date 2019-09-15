@@ -1,5 +1,6 @@
-package cn.tedu.nybike.po;
+package cn.tedu.nybike.mapper;
 
+import cn.tedu.nybike.po.BikeStatusDo;
 import cn.tedu.nybike.util.DBUtils;
 
 import java.sql.Connection;
@@ -15,8 +16,9 @@ public class StationDao {
 
         // 获取连接
         // 获取SQL执行器
-        try(Connection conn=DBUtils.getConn();
-            PreparedStatement ps=conn.prepareStatement(sql)){
+        try{
+            Connection conn=DBUtils.getConn();
+            PreparedStatement ps=conn.prepareStatement(sql);
             // 遍历list集合
             for(BikeStatusDo ssDO:list){
                 // 绑定参数

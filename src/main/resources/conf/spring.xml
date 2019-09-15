@@ -25,14 +25,14 @@
 
 	<!-- 引入dbconflig.properties配置文件 -->
 	<context:property-placeholder
-		location="classpath:conf/dbconflig.properties" />
+		location="classpath:jdbc.properties" />
 		<!-- spring主要是配置与业务逻辑有关的请求，比如数据源，业务控制等 -->
 	<bean id="ComboPooledDataSource"
 		class="com.mchange.v2.c3p0.ComboPooledDataSource">
-		<property name="jdbcUrl" value="${jdbc.jdbcUrl}"></property>
-		<property name="driverClass" value="${jdbc.driverClass}"></property>
-		<property name="user" value="${jdbc.user}"></property>
-		<property name="password" value="${jdbc.password}"></property>
+		<property name="jdbcUrl" value="${url}"></property>
+		<property name="driverClass" value="${driver}"></property>
+		<property name="user" value="${username}"></property>
+		<property name="password" value="${password}"></property>
 	</bean>
 
 

@@ -1,6 +1,8 @@
 package cn.tedu.nybike.util;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +15,7 @@ import java.util.Properties;
 
 
 public class DBUtils {
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	private static BasicDataSource dataSource;
 	static {
 		dataSource = new BasicDataSource();

@@ -5,6 +5,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 <configuration>
 	<settings>
 	    <setting name="mapUnderscoreToCamelCase" value="true"/>
+		<setting name="logImpl" value="LOG4J"/>
 	</settings>
 	
 	<typeAliases>

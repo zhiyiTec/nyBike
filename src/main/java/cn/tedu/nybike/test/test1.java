@@ -1,8 +1,7 @@
 package cn.tedu.nybike.test;
 
 import cn.tedu.nybike.po.BikeStatusDo;
-import cn.tedu.nybike.po.BikeStatusPo;
-import cn.tedu.nybike.po.StationDao;
+import cn.tedu.nybike.mapper.StationDao;
 import cn.tedu.nybike.util.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
