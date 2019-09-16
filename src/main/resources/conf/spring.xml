@@ -57,6 +57,7 @@
 			value="SqlSessionFactoryBean" />
 		<!--扫描所有的Mapper接口，加入到ioc容器中 -->
 		<property name="basePackage" value="cn.tedu.nybike.mapper"></property>
+
 	</bean>
 	
 	

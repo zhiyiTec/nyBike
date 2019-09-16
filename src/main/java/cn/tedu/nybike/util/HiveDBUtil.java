@@ -9,9 +9,9 @@ import java.sql.SQLException;
 
 public class HiveDBUtil {
     private static  Logger logger = LoggerFactory.getLogger(HiveDBUtil.class);;
-    private static String url="jdbc:hive2://192.168.56.101:10000/nybike";
-    private static String user="root";
-    private static String password="root";
+    private static final String URL="jdbc:hive2://192.168.56.101:10000/nybike";
+    private static final String USER="root";
+    private static final String PASSWORD="root";
 //    注册驱动
 //    使用静态代码块/静态初始化器，用于初始化静态变量，当类在加载完成之后就立刻执行
     static{
@@ -29,7 +29,7 @@ public class HiveDBUtil {
      */
     public static Connection getHiveConnection() throws SQLException {
         logger.info("加载驱动中......");
-        return DriverManager.getConnection(url,user,password);
+        return DriverManager.getConnection(URL,USER,PASSWORD);
     }
 
     public static void main(String[] args) throws SQLException {
