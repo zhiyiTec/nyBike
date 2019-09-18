@@ -1,36 +1,37 @@
 package cn.tedu.nybike.web;
 
-import cn.tedu.nybike.listener.SCListener;
+import java.io.IOException;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+
+import cn.tedu.nybike.listener.SCListener;
 
 public class StationInfoServlet extends HttpServlet {
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ServletContext sc=getServletContext();//è·å–ServletContextå¯¹è±¡
-        SCListener.LOCK.readLock().lock();//åŠ ä¸Šè¯»é”
-        String info="";
-        try {
-           Object obj  =sc.getAttribute("info");//ä»scä¸­è·å–ç«™ç‚¹æ•°æ®
-            if(obj!=null){
-                info=String.valueOf(obj);
-            }
-        }catch (Exception e){
-            System.out.println("è¯»æ•°æ®å¼‚å¸¸");
-        }finally {
-            SCListener.LOCK.readLock().unlock();//è§£é”
-        }
-        resp.setContentType("application/json;charset=utf-8");//æ­¤å¤„ç”¨äºå°†è¿”å›çš„æ•°æ®å˜æˆjsonæ ¼å¼
-        resp.getWriter().write(info);//æ­¤å¤„å°†æ•°æ®è¿”å›ç»™æµè§ˆå™¨
-    }
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		ServletContext sc=getServletContext();//»ñÈ¡ServletContext¶ÔÏó
+		SCListener.LOCK.readLock().lock();//¼ÓÉÏ¶ÁËø
+		String info="";
+		try {
+			Object obj  =sc.getAttribute("info");//´ÓscÖĞ»ñÈ¡Õ¾µãÊı¾İ
+			if(obj!=null){
+				info=String.valueOf(obj);
+			}
+		}catch (Exception e){
+			System.out.println("¶ÁÊı¾İÒì³£");
+		}finally {
+			SCListener.LOCK.readLock().unlock();//½âËø
+		}
+		resp.setContentType("application/json;charset=utf-8");//´Ë´¦ÓÃÓÚ½«·µ»ØµÄÊı¾İ±ä³Éjson¸ñÊ½
+		resp.getWriter().write(info);//´Ë´¦½«Êı¾İ·µ»Ø¸øä¯ÀÀÆ÷
+	}
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
-    }
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		super.doPost(req, resp);
+	}
 }

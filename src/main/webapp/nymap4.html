@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>纽约</title>
+    <style type="text/css">
+        html {
+            height: 100%
+        }
+        
+        body {
+            height: 100%;
+            margin: 0px;
+            padding: 0px
+        }
+        
+        #container {
+            height: 100%
+        }
+    </style>
+    <link rel="stylesheet" href="dist/css/my.css">
+    <link rel="stylesheet" href="dist/css/page.css">
+
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=VDA1q5q8BjpU84eBmRohKMILDTr7TZPN">
+        //v3.0版本的引用方式：src="http://api.map.baidu.com/api?v=3.0&ak=VDA1q5q8BjpU84eBmRohKMILDTr7TZPN"
+    </script>
+</head>
+
+<body>
+    <div id="container"></div>
+    <div id="bike-zhuang">
+        <button type="button" id="btn1"><img src="dist/img/bike.png" style="height:40px ;width:35px"/></button>
+        <button type="button" id="btn2"><img src="dist/img/zhuang.png" style="height:40px ;width:35px"/></button>
+    </div>
+
+    <script type="text/javascript" src="dist/js/nymap3.js"></script>
+    <script type="text/javascript" src="dist/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript">
+        // 创建地图实例  
+        var map = new BMap.Map("container");
+        // 创建点坐标  
+        var point = new BMap.Point(-73.985635, 40.748210);
+        // 初始化地图，设置中心点坐标和地图级别  
+        map.centerAndZoom(point, 14);
+
+        /* var marker = new BMap.Marker(point);        // 创建标注    
+        map.addOverlay(marker);                     // 将标注添加到地图中
+         */
+
+        map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
+
+        var opts = {
+                offset: new BMap.Size(10, 5),
+                anchor: BMAP_ANCHOR_BOTTOM_RIGHT
+            }
+            //平移缩放控件
+        map.addControl(new BMap.NavigationControl(opts));
+
+
+        //定义一个控件类,即function
+        function ZoomControl() {
+            // 默认停靠位置和偏移量
+            this.defaultAnchor = BMAP_ANCHOR_TOP_LEFT;
+            this.defaultOffset = new BMap.Size(40, 40);
+        }
+
+        // 通过JavaScript的prototype属性继承于BMap.Control
+        ZoomControl.prototype = new BMap.Control();
+
+        // 自定义控件必须实现自己的initialize方法,并且将控件的DOM元素返回
+        // 在本方法中创建个div元素作为控件的容器,并将其添加到地图容器中
+        ZoomControl.prototype.initialize = function(map) {
+            var btn2 = document.getElementById('btn2');
+            var btn1 = document.getElementById('btn1');
+            btn2.onclick = function(e) {
+                $.get(statusUrl, function(infoResult) {
+                    var stations = infoResult.data.stations;
+                    var i = 0;
+                    for (var index in stations) {
+                        //获取站点id
+                        var id = stations[index].station_id;
+                        isPileType = true;
+                        changeMarker(isPileType, id, i);
+                        i++;
+                    }
+                });
+            }
+            btn1.onclick = function(e) {
+                $.get(statusUrl, function(infoResult) {
+                    var stations = infoResult.data.stations;
+                    var i = 0;
+                    for (var index in stations) {
+                        //获取站点id
+                        var id = stations[index].station_id;
+                        isPileType = false;
+                        changeMarker(isPileType, id, i);
+                        i++;
+                    }
+
+                });
+
+            }
+
+        }
+
+        //创建控件
+        var myZoomCtrl = new ZoomControl();
+        // 添加到地图当中
+        map.addControl(myZoomCtrl);
+
+
+        var infoUrlArr = [
+            "https://gbfs.citibikenyc.com/gbfs/en/station_information.json",
+            "data/station_information.json",
+            "http://localhost:8080/nybike/station_info"
+        ];
+        var statusUrlArr = [
+            "https://gbfs.citibikenyc.com/gbfs/en/station_status.json",
+            "data/station_status.json",
+            "http://localhost:8080/nybike/station	_status"
+        ];
+        //发送ajax请求，获取站点信息数据
+        var infoUrl = infoUrlArr[2];
+        var statusUrl = statusUrlArr[2];
+        var a = true;
+        //用于保存bikeLevel的Map集合
+        var bikeLevelMap = new Map();
+        //记录地图的图标类型
+        var isBigIcon = false;
+        //存取leavel值使用map集合
+        var bikeMap = new Map();
+
+        var isPileType = false;
+        //保存所有marker
+        var markerArr = [];
+        //用于保存站点的id和sDetail
+        var detailMap = new Map();
+        //保存桩
+        var pileArr = [];
+        var pileMap = new Map();
+
+
+        var bigIconSize = new BMap.Size(41, 50); //大图标的size
+        var bigAnchorSize = new BMap.Size(20, 50); //大图标的锚点size
+        var smallIconSize = new BMap.Size(10, 10); //小图标的size
+        var smallAnchorSize = new BMap.Size(5, 10); //小图标的锚点size
+
+        $.get(statusUrl, function(statusResult) {
+
+            //封装收到响应之后执行的逻辑
+            //statusResult代表收到的响应数据
+            //console.log(statusoResult);
+            console.log(statusResult.data.stations	);
+            //从结果数据中获取站点状态数组
+            var stations = statusResult.data.stations;
+            /* console.log(statusResult); */
+            for (var index in stations) {
+                var id = stations[index].station_id;
+                var nba = stations[index].num_bikes_available;
+                var nda = stations[index].num_docks_available;
+
+                var arr = getBikeLevel(nba, nda);
+                //将id,和level存到map集合中
+                bikeLevel = arr[0];
+                //桩的等级
+                pileLevel = arr[1];
+                pileMap.set(id, pileLevel);
+                bikeMap.set(id, bikeLevel);
+
+
+                //创建StationDetial对象
+                var sDetail = new StationDetail();
+                sDetail.nba = nba;
+                sDetail.nda = nda;
+                detailMap.set(id, sDetail);
+
+
+                /* console.log(id+"~"+nba+"~"+nda); */
+                /* var point=new BMap.Point(nba,nda); */ //创建Point对象
+                //在地图上添加站点标注
+                /* var bikeLevel=getBikeLevel(nba,nda);
+                bikeLevelMap.set(id,bikeLevel); */
+                //console.log(id+"~"+bikeLevel+"~"+nba+"~"+nda);		
+            }
+
+            //发送ajax请求，获取站点信息数据
+            $.get(infoUrl, function(infoResult) {
+                //将返回的字符串变成JS对象
+                //infoResult=JSON.parse(infoResult);
+
+                //封装收到响应之后执行的逻辑
+                //infoResult代表收到的响应数据
+                //console.log(infoResult);		
+                //从结果数据中获取站点信息数组
+                var stations = infoResult.data.stations;
+                /* console.log(infoResult); */
+                for (var index in stations) {
+                    var id = stations[index].station_id;
+                    var lon = stations[index].lon;
+                    var lat = stations[index].lat;
+                    /* var name=stations[index].name;
+                    var short_name=stations[index].short_name; */
+
+                    /* console.log(id+"~"+lon+"~"+lat); */
+                    //创建Point对象
+                    var point = new BMap.Point(lon, lat);
+                    //在地图上添加站点标注
+                    var bikeLevel = bikeMap.get(id);
+
+                    if (isPileType == false) {
+                        //根据经纬度显示自定义标注
+                        var imageUrl = "img/si_" + bikeLevel + ".png";
+                        //根据id获取对象
+                        var sDetail = detailMap.get(id);
+                        //获取名字
+                        sDetail.name = stations[index].name;
+                        sDetail.short_name = stations[index].short_name;
+                        //sDetail.last_updated = stations[index].last_updated;
+                        //调用添加marker方法
+                        addMarker(point, imageUrl, smallIconSize, smallAnchorSize, id);
+                    }
+
+                    /* var imageUrl="img/si_"+bikeLevel+".png";
+			var sDetail=detailMap.get(id);
+			sDetail.name=name;
+			sDetail.shortName=short_name;
+	        addMarker(point,imageUrl,smallIconSize,smallAnchorSize,id); */
+                }
+            });
+        });
+
+
+        //为地图添加缩放结束事件
+        map.addEventListener("zoomend", function() {
+            var zoomLevel = this.getZoom();
+            //alert("地图缩放至：" + this.getZoom() + "级");    
+
+            if (zoomLevel > 14 && isBigIcon == false) {
+                isBigIcon = true;
+                switchIcon(isBigIcon);
+            }
+
+            if (zoomLevel < 15 && isBigIcon == true) {
+                isBigIcon = false;
+                switchIcon(isBigIcon);
+            }
+        });
+    </script>
+</body>
+
+</html>

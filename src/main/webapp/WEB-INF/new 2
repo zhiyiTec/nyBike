@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>NewYork</title>
+
+<script src="js/echarts.min.js"></script>
+
+
+</head>
+
+<body>
+
+	<div id="div1" style="height: 600px;; width: 100%"></div>
+
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<script type="text/javascript">
+        var myChart = echarts.init(
+            document.getElementById('div1'), 'dark');
+        var url = "http://localhost:8080/nybike/genderavgtime_servlet";
+        var xData =[];//横坐标
+        var mindate=10;
+        var maxdate=60;
+        var man_ydata=[];
+        var wmMan_ydata=[];
+        var noMan_ydata=[];
+       	var manMap=new Map();
+       	var wmMap=new Map();
+       	var noMap=new Map();
+        $.get(url, function(result) {
+        	console.log(result);
+        	// 根据毫秒数构建 Date 对象
+        	
+        	$(result.data).each(function(index,value){
+        		// 根据毫秒数构建 Date 对象
+        		
+        		var num=value.avg_time;
+        		if(value.gender=='男')setMap(value,manMap);
+        		if(value.gender=='女')setMap(value,wmMap);
+        		if(value.gender=='未知')setMap(value,noMap);
+        		
+        		
+        	})
+        	for(i=1;i<=30;i++){
+            	xData.push(i);
+            	man_ydata.push(manMap.get(i));
+            	wmMan_ydata.push(manMap.get(i));
+            	noMan_ydata.push(manMap.get(i));
+            }
+        	console.log(manMap)
+        	console.log(wmMap)
+        	console.log(noMap)
+        	var date = new Date(1499996760000);
+        	// 格式化日期
+        	dateTime = date.toLocaleString();
+        	   ;
+              var yData1 = [];
+              var maxdate;
+              var mindate = 0;
+              option = {
+                  title: {
+                      text: '字母统计'
+                  },
+                  xAxis: {
+                      type: 'category',
+                      data: xData
+                  },
+                  yAxis: {
+                      type: 'value',
+                      min: mindate,
+                      max: maxdate,
+                      splitArea: {
+                          show: true
+                      }
+                  },
+                  series: [{
+                      data: man_ydata,
+                      type: 'line'
+                  },
+                  {
+                      data: wmMan_ydata,
+                      type: 'line'
+                  },{
+                      data: noMan_ydata,
+                      type: 'line'
+                  }]
+              };
+            myChart.setOption(option);
+        });
+        // ajax请求服务器获取数据，给xdata和ydata赋值
+      
+	function judgExit(value,map){
+        	if(map.get(value))return true;
+        	else return false;
+        }
+		function setMap(value,map){
+			var date = new Date(value.data);
+			if(judgExit(date.getDate(),map)){
+				var t1=map.get(date.getDate());
+				var t2=t1+value.avg_time;
+				map.set(date.getDate(),t2);
+			}else map.set(date.getDate(),value.avg_time);
+		}
+		
+
+
+        
+    </script>
+</body>
+
+</html>

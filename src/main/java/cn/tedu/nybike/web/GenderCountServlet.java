@@ -1,45 +1,33 @@
 package cn.tedu.nybike.web;
 
-import cn.tedu.nybike.listener.SCListener;
-import cn.tedu.nybike.po.vo.GenderCountVo;
-import cn.tedu.nybike.service.GetService;
-import cn.tedu.nybike.service.impl.GetServiceImpl;
-import com.alibaba.fastjson.JSON;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.servlet.ServletContext;
+import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.sql.SQLException;
 
+import com.alibaba.fastjson.JSON;
+
+import cn.tedu.nybike.pojo.GenderCountVO;
+import cn.tedu.nybike.service.TripService;
+
+/**
+ * Servlet implementation class GenderCountServlet
+ */
 public class GenderCountServlet extends HttpServlet {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-   GetServiceImpl getService=new GetServiceImpl();
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ServletContext sc=getServletContext();//è·å–ServletContextå¯¹è±¡
-        String info="";
-        try {
-            GenderCountVo genderCountVo = getService.getGenderCount();
-            //æ­¤å¤„å°†å¯¹è±¡è½¬åŒ–ä¸ºjson
-            info= JSON.toJSONString(genderCountVo);
-            resp.setContentType("application/json;charset=utf-8");//æ­¤å¤„ç”¨äºå°†è¿”å›çš„æ•°æ®å˜æˆjsonæ ¼å¼
-            resp.getWriter().write(info);//æ­¤å¤„å°†æ•°æ®è¿”å›ç»™æµè§ˆå™¨
-            logger.info("ä¿¡æ¯å·²ç» å­˜å…¥requestä¸­ï¼Œä¼ å…¥çš„ä¿¡æ¯ä¸º:"+info);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+	private static final long serialVersionUID = 1L;
 
+	TripService service = new TripService();
 
-    }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
-    }
+		// µ÷ÓÃservice»ñÈ¡vo¶ÔÏó
+		GenderCountVO vo = service.findGenderCount();
+		// µ÷ÓÃfastJSON·½·¨½«vo×ª³É×Ö·û´®
+		String jsonStr = JSON.toJSONString(vo);
+		response.setContentType("application/json;charset=utf-8");
+		// ½«Êı¾İ·µ»Ø¸øä¯ÀÀÆ÷
+		response.getWriter().write(jsonStr);
+	}
 }

@@ -1,6 +1,5 @@
 package cn.tedu.nybike.listener;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -8,87 +7,55 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import cn.tedu.nybike.service.SaveService;
-import cn.tedu.nybike.util.HttpUtil;
-import cn.tedu.nybike.util.SpringContextUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import cn.tedu.utils.HttpUtil;
 
+public class SCListener implements ServletContextListener {
 
-public class SCListener implements  ServletContextListener{
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    private SaveService saveService=null;
-	private final String SSURL="https://gbfs.citibikenyc.com/gbfs/en/station_status.json";//stationSatus
-	private final String SIURL="https://gbfs.citibikenyc.com/gbfs/en/station_information.json";//stationInfo
-	public static boolean siginal=true;
-	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-	public static long queryInterval=60*1000;
-
-	//静态常量所有字母都大写
-	public final  static ReentrantReadWriteLock LOCK=new ReentrantReadWriteLock();//创建读写锁(此处应该加一个final，因为要保证用同一个锁)
-	
-	
-
-
-	public void contextInitialized(ServletContextEvent sce) {
-		// TODO Auto-generated method stub
-		System.out.println("监听到sc被创建");
-
-		//此处通过事件对象
-		final ServletContext sc=sce.getServletContext();
-		
-		//此处创建一个子线程
-		Thread t1=new Thread(new Runnable() {
-			
-			public void run() {
-				while(siginal){
-					String status=HttpUtil.get(SSURL,"GET");//获取stationStatus数据
-                    //saveService.saveStatus(status);//此处将信息存储到数据库
-					String info=HttpUtil.get(SIURL,"GET");//获取stationInfo数据
-					LOCK.writeLock().lock();//添加写锁，以防在写入时有其进程读数据
-					try {
-
-						sc.setAttribute("status", status);
-						sc.setAttribute("info", info);
-
-						if(sc.getAttribute("status")!=null&&sc.getAttribute("info")!=null){
-							logger.info("sc在"+df.format(new Date())+"请求到info数据，请求到的数据正常");
-							//System.out.println("sc在"+df.format(new Date())+"请求到info数据，请求到的数据正常");
-						}else{
-							logger.error("sc在"+df.format(new Date())+"!!!请求到info数据，请求到的异常数据!!!");
-							//System.out.println("sc在"+df.format(new Date())+"!!!请求到info数据，请求到的异常数据!!!");
-						}
-
-					}catch (Exception e) {
-						siginal=false;
-					}finally {
-						LOCK.writeLock().unlock();//此处进行解锁
-					}
-
-					try {
-						Thread.sleep(queryInterval);
-					} catch (InterruptedException e) {
-						siginal=false;
-						e.printStackTrace();
-					}
-				}
-				// TODO Auto-generated method stub
-
-
-
-			}
-		});
-		t1.start();
-		
-		
-	}
-
+	public static boolean loopFlag = true;
+	public static long queryInterval = 60 * 1000;
+	String infoUrl = "https://gbfs.citibikenyc.com/gbfs/en/station_information.json";
+	String statusUrl = "https://gbfs.citibikenyc.com/gbfs/en/station_status.json";
+	public static final ReentrantReadWriteLock LOCK = new ReentrantReadWriteLock();
+	public static final String SC_INFO = "info";
+	public static final String SC_STATUS = "status";
 
 	public void contextDestroyed(ServletContextEvent arg0) {
 		// TODO Auto-generated method stub
-		System.out.println("监听到sc被销毁");
+
 	}
 
+	public void contextInitialized(ServletContextEvent sce) {
+		// TODO Auto-generated method stub
+		// ͨ���¼����󣬻�ȡServletContext����
+		final ServletContext sc = sce.getServletContext();
+		// System.out.println("������SC������");
 
+		Thread t1 = new Thread(new Runnable() {
+
+			public void run() {
+				// TODO Auto-generated method stub
+				while (loopFlag) {
+					String info = HttpUtil.get(infoUrl);
+					String status = HttpUtil.get(statusUrl);
+					LOCK.writeLock().lock();
+					// System.out.println(info);
+					try {
+						sc.setAttribute(SC_INFO, info);
+						sc.setAttribute(SC_STATUS, status);
+					} finally {
+						// TODO: handle finally clause
+						LOCK.writeLock().unlock();
+					}
+					//System.out.println("SC����info��status���ݣ�" + new Date());
+					try {
+						Thread.sleep(queryInterval);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+		t1.start();
+	}
 }

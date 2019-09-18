@@ -3,49 +3,98 @@
   <display-name>nybike</display-name>
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
-
-    <welcome-file>index.jsp</welcome-file>
-    <welcome-file>default.html</welcome-file>
-    <welcome-file>default.htm</welcome-file>
-    <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
   <listener>
-  	<listener-class>cn.tedu.nybike.listener.SCListener</listener-class>
+    <listener-class>cn.tedu.nybike.listener.SCListener</listener-class>
   </listener>
-  <!-- log4j 配置 -->
-  <context-param>
-    <param-name>log4jConfigLocation</param-name>
-    <param-value>classpath:log4j.properties</param-value>
-    <!-- <param-value>/WEB-INF/log4j.xml</param-value> -->
-  </context-param>
-  <listener>
-    <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
-  </listener>
-    <servlet>
-  <servlet-name>StationStatusServlet</servlet-name>
-  <servlet-class>cn.tedu.nybike.web.StationStatusServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-  <servlet-name>StationStatusServlet</servlet-name>
-  <url-pattern>/StationStatusServlet</url-pattern>
-  </servlet-mapping>
-
-
   <servlet>
+    <description></description>
+    <display-name>StationInfoServlet</display-name>
     <servlet-name>StationInfoServlet</servlet-name>
     <servlet-class>cn.tedu.nybike.web.StationInfoServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>StationInfoServlet</servlet-name>
-    <url-pattern>/StationInfoServlet</url-pattern>
+    <url-pattern>/station_info</url-pattern>
   </servlet-mapping>
-
   <servlet>
+    <description></description>
+    <display-name>StationStatusServlet</display-name>
+    <servlet-name>StationStatusServlet</servlet-name>
+    <servlet-class>cn.tedu.nybike.web.StationStatusServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>StationStatusServlet</servlet-name>
+    <url-pattern>/station_status</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>GenderCountServlet</display-name>
     <servlet-name>GenderCountServlet</servlet-name>
     <servlet-class>cn.tedu.nybike.web.GenderCountServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>GenderCountServlet</servlet-name>
-    <url-pattern>/GenderCountServlet</url-pattern>
+    <url-pattern>/gender_count</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>AgeStageCountServlet</servlet-name>
+    <servlet-class>cn.tedu.nybike.web.AgeStageCountServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AgeStageCountServlet</servlet-name>
+    <url-pattern>/AgeStageCountServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>UserTypeCountServlet</servlet-name>
+    <servlet-class>cn.tedu.nybike.web.UserTypeCountServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserTypeCountServlet</servlet-name>
+    <url-pattern>/UserTypeCountServlet</url-pattern>
+  </servlet-mapping>
+
+
+
+  <servlet>
+    <servlet-name>DurationCountServlet</servlet-name>
+    <servlet-class>cn.tedu.nybike.web.DurationCountServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DurationCountServlet</servlet-name>
+    <url-pattern>/DurationCountServlet</url-pattern>
+  </servlet-mapping>
+
+
+
+
+
+
+
+
+
+
+
+    <servlet>
+        <description></description>
+        <display-name>BrokenBikeServlet</display-name>
+        <servlet-name>BrokenBikeServlet</servlet-name>
+        <servlet-class>cn.tedu.nybike.web.BrokenBikeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BrokenBikeServlet</servlet-name>
+        <url-pattern>/brokenbike_servlet</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <description></description>
+        <display-name>GenderAvgTimeServlet</display-name>
+        <servlet-name>GenderAvgTimeServlet</servlet-name>
+        <servlet-class>cn.tedu.nybike.web.GenderAvgTimeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GenderAvgTimeServlet</servlet-name>
+        <url-pattern>/genderavgtime_servlet</url-pattern>
+    </servlet-mapping>
 </web-app>
